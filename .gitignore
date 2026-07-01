@@ -13,10 +13,12 @@ backend/ENV/
 backend/**/__pycache__/
 backend/**/*.py[cod]
 *.pyc
+*.env
 
 # Environment variables
 backend/.env
 backend/.env.*
+
 
 # SQLite (if used)
 backend/db.sqlite3
