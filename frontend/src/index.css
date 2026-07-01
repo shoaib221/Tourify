@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
+@import "tailwindcss";
+@plugin "daisyui";
+
+
+:root {
+	--color1: rgb(72, 78, 200);
+	--color1a: #727171;
+	--color2: rgb(189, 198, 236);
+	--color3: #ffffff;
+	--color4: #ffffff;
+	--color5: #ffffff;
+	--color6: #ffffff;
+	--color7: #ffffff;
+	--color-blur: rgba(0, 0, 0, 0.338);
+	--shadow-1: rgba(0, 0, 0, 0.2);
+	--shadow-2: rgba(0, 0, 0, 0.15);
+}
+
+
+* {
+	box-sizing: border-box;
+	scrollbar-width: thin;
+    
+}
+
+
+
+
+html {
+
+	font-family: "Merriweather", serif;
+	font-optical-sizing: auto;
+	font-style: normal;
+	font-variation-settings: "wdth" 100;
+	background-color: var(--color1);
+	
+}
+
+
+
+.cen-ver {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.cen-hor {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+
+@media screen and (max-width: 1024px) {
+	html {
+		font-size: 14px;
+	}
+}
+
+
+@media screen and (max-width: 768px) {
+	html {
+		font-size: 12px;
+	}
+}
+
+
+/* 
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+
+::-webkit-scrollbar-track {
+    background: var(--color1);
+}
+
+
+::-webkit-scrollbar-thumb {
+    background: var(--color1);
+    border-radius: 999px;
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color2);
+}
+ */

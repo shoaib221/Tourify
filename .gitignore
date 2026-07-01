@@ -12,6 +12,7 @@ backend/ENV/
 # Python cache
 backend/**/__pycache__/
 backend/**/*.py[cod]
+*.pyc
 
 # Environment variables
 backend/.env
