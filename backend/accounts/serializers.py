@@ -2,7 +2,11 @@
 
 from rest_framework import serializers
 from residence.models import *
-from accounts.models import *
+from .models import *
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
+
+
 
 
 
@@ -17,7 +21,9 @@ class CitySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-###########################################
+##################################################################
+
+
 
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
@@ -35,3 +41,23 @@ class MyProfileSerializer(serializers.ModelSerializer):
         model = UserDetail
         fields = [ 'mail', 'mobile', 'nid', 'country' ]
 
+
+class UserSerializer( serializers.ModelSerializer ):
+
+    class Meta:
+        model = User
+        fields = [ 'username', 'password' ]
+
+
+
+class RegisterSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
+    def create(self, validated_data):
+        user = User.objects.create(
+            username=validated_data["email"],
+            email=validated_data["email"],
+            password=make_password(validated_data["password"])
+        )
+        return user

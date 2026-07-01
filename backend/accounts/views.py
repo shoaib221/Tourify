@@ -1,7 +1,3 @@
-
-
-
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -11,9 +7,15 @@ from .models import *
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import login, authenticate, logout
 from django.core.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
+from google.oauth2 import id_token
+from google.auth.transport import requests
+from decouple import config
 
 
 class Test(APIView):
+    permission_classes = [AllowAny]
 
     def get(self, request):
         if request.user.is_authenticated:
@@ -30,7 +32,6 @@ class Test(APIView):
     
     def put(self, request):
         if request.user.is_authenticated:
-
             return Response( { 'message': ' Put authenticated ' }, status=status.HTTP_200_OK )
         else:
             return Response( { 'message': 'Put unauth' } , status=status.HTTP_200_OK )
@@ -41,185 +42,87 @@ class Test(APIView):
 
 
 class MyRegister(APIView):
-
-    def get(self, request):
-        if request.user.is_authenticated:
-            context = {
-                'message': 'Already Registered'
-            }
-            return Response( context , status=status.HTTP_200_OK)
-        else:
-            serializer = UserDetailSerializer()
-            qs = Country.objects.all()
-            country_serializer = CountrySerializer(qs, many=True)
-            context = {
-                'user_detail': serializer.data,
-                'country': country_serializer.data
-            }
-            return Response(context , status=status.HTTP_200_OK )
-
-    def post(self, request):
-
-        if request.user.is_authenticated:
-            context = {
-                'message': 'Already Registered'
-            }
-            return Response( context , status=status.HTTP_200_OK)
-        
-        else:
-
-            serializer = UserDetailSerializer(data=request.data)
-            #print(request.data)
-            #print(serializer.data)
-
-            if serializer.is_valid():
-                
-                user_detail = UserDetail()
-                user_detail.username = serializer.validated_data['mail']
-                user_detail.country = serializer.validated_data['country']
-                user_detail.nid = serializer.validated_data['nid']
-                user_detail.mobile = serializer.validated_data['mobile']
-                user_detail.mail = serializer.validated_data['mail']
-                user_detail.password = make_password( serializer.validated_data['password'] )
-
-                #print(serializer.validated_data)
-                #print(serializer.data)
-                #print(user_detail.password)
-
-                try:
-                    user_detail.full_clean()
-                    user_detail.save()
-                    context = {
-                        'message': 'successfully registered',
-                        'serializer': serializer.data
-                    }
-                    return Response(serializer.data, status=status.HTTP_201_CREATED)
-                except ValidationError as ve:
-                    context = {
-                        'errors': ve.message_dict,
-                        'serializer': serializer.data
-                    }
-                    return Response(context, status=status.HTTP_400_BAD_REQUEST)
-                
-            else:
-                context={
-                    'errors': serializer.errors,
-                    'serializer': serializer.data
-                }
-                return Response(context , status=status.HTTP_400_BAD_REQUEST)
-            
-
-class MyLogin(APIView):
-
-    def post(self, request):
-        
-        if request.user.is_authenticated:
-            context = {
-                'message': 'Already logged in'
-            }
-            return Response( context , status=status.HTTP_200_OK)
-        
-        else:
-            serializer = LoginSerializer(data=request.data)
-            if serializer.is_valid():
-                mail = serializer.validated_data['mail']
-                password = serializer.validated_data['password']
-                user = UserDetail.objects.get(mail=mail)
-                if user is None:
-                    
-                    context = {
-                        'message': 'No such user, Regester',
-                        'serializer': serializer.data
-                    }
-                    return Response(context, status=status.HTTP_400_BAD_REQUEST)
-                
-                elif check_password(password, user.password):
-                    login(request, user)
-                    context = {
-                        'message': 'Successfully logged in',
-                    }
-                    return Response(context, status=status.HTTP_200_OK)
-
-                else:
-                    context = {
-                        'message': 'Incorrect Password',
-                        'serializer': serializer.data
-                    }
-                    return Response(context, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                context = {
-                    'errors': serializer.errors,
-                    'serializer': serializer.data
-                }
-                return Response( context , status=status.HTTP_200_OK)
-
-
-    def get(self, request):
-        if request.user.is_authenticated:
-            context = {
-                'message': 'Already logged in'
-            }
-            return Response( context , status=status.HTTP_200_OK)
-        else:
-            #print(request.data)
-            #print(request.user)
-            serializer = LoginSerializer()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class MyLogout(APIView):
-        
-        def get(self, request):
-
-            if request.user.is_authenticated:
-                logout(request)
-                context = {
-                    'message': 'Successfully logged out'
-                }
-                return Response(context, status=status.HTTP_200_OK)
-            else:
-                context = {
-                    'message': 'Already logged out'
-                }
-                return Response(context, status=status.HTTP_200_OK)
-            
-
-class MyProfile(APIView):
+    permission_classes = [AllowAny]
 
     def get( self, request ):
-        if request.user.is_authenticated:
-            user_detail = UserDetail.objects.get(username=request.user.username)
-            serializer = MyProfileSerializer(user_detail)
-            context = {'user_detail': serializer.data}
-            return Response(context, status=status.HTTP_200_OK)
-        else:
-            context = {
-                'message': 'Log in first'
+        serializer = RegisterSerializer()
+
+        return Response({
+            "Send Post Req": serializer.data
+        })
+    
+
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+
+        if serializer.is_valid():
+            user = serializer.save()
+
+            refresh = RefreshToken.for_user(user)
+
+            return Response(
+                {
+                    "message": "Registration successful",
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh),
+                },
+                status=status.HTTP_201_CREATED,
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class MyProfile(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get( self, request ):
+        user_detail = UserDetail.objects.get(username=request.user.username)
+        serializer = MyProfileSerializer(user_detail)
+        context = {'user_detail': serializer.data}
+        return Response(context, status=status.HTTP_200_OK)
+
+
+
+CLIENT_ID = config('GOOGLE_OAUTH_CLIENT')
+
+
+class GoogleLogin(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        token = request.data["token"]
+
+        info = id_token.verify_oauth2_token(
+            token,
+            requests.Request(),
+            CLIENT_ID
+        )
+
+        user, _ = User.objects.get_or_create(
+            username=info["email"],
+            defaults={
+                "email": info["email"]
             }
-            return Response(context, status=status.HTTP_200_OK)
+        )
+
+        refresh = RefreshToken.for_user(user)
+
+        print( user, _ )
+
+        user = User.objects.get( email = info['email'] )
         
 
-class ShowProfileDetail(APIView):
-
-    def get(self, request, user_id):
-
-        if request.user.is_authenticated:
-            user_detail = UserDetail.objects.get(id=user_id)
-            if user_detail is None:
-                return Response( { "message": "No such user" } ,status=status.HTTP_400_BAD_REQUEST)
-            serializer = MyProfileSerializer(user_detail)
-            context = {'user_detail': serializer.data}
-            return Response(context, status=status.HTTP_200_OK)
-        else:
-            context = {
-                'message': 'Log in first'
+        return Response({
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "accessToken": str(refresh.access_token),
+                "refreshToken": str(refresh)
             }
-            return Response(context, status=status.HTTP_200_OK)
-
-
-
-
-
+            
+        })
 
 
 

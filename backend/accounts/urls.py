@@ -1,6 +1,10 @@
-# from django.contrib import admin
+
 from django.urls import path
 from . import views
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 
 urlpatterns = [
@@ -19,11 +23,56 @@ urlpatterns = [
 
     path('test/' , views.Test.as_view() , name='test' ),
     path('register/', views.MyRegister.as_view(), name='api register'),
-    path('login/', views.MyLogin.as_view(), name='login'),
-    path('logout/', views.MyLogout.as_view(), name='logout'),
     path('my_profile/', views.MyProfile.as_view(), name='profile'),
-    path("profile/<int:user_id>/", views.ShowProfileDetail.as_view()),
+    path( "login/", TokenObtainPairView.as_view()),
+    path( "token-refresh/", TokenRefreshView.as_view() ),
+    path( "google-login/", views.GoogleLogin.as_view(), name="google-login" )
 ]
 
 
 
+# 5. Login
+
+# Send a POST request to:
+
+# POST /api/token/
+
+# Body:
+
+# {
+#     "username": "shoaib",
+#     "password": "12345678"
+# }
+
+# Response:
+
+# {
+#     "refresh": "eyJhbGciOi...",
+#     "access": "eyJhbGciOi..."
+# }
+# 6. Use the access token
+
+# React sends:
+
+# GET /api/profile/
+
+# Authorization: Bearer <access_token>
+
+
+# 8. Refresh an expired access token
+
+# POST:
+
+# /api/token/refresh/
+
+# Body:
+
+# {
+#     "refresh": "<refresh_token>"
+# }
+
+# Response:
+
+# {
+#     "access": "<new_access_token>"
+# }
