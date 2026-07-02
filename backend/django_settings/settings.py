@@ -15,7 +15,7 @@ SECRET_KEY = 'django-insecure-pr$x9_t)r!ezv3&4rtnb4ehiub^!o4z0cl+z7wt%^2_ew9q-j!
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "https://tourify-zkwo.onrender.com/",
+    "tourify-zkwo.onrender.com",
     'localhost'
 ]
 import os
