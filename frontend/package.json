@@ -25,6 +25,7 @@
 		"localforage": "^1.10.0",
 		"lucide-react": "^0.544.0",
 		"match-sorter": "^8.1.0",
+		"motion": "^12.42.2",
 		"react": "^19.0.0-rc.1",
 		"react-dom": "^19.0.0-rc.1",
 		"react-fast-marquee": "^1.6.5",

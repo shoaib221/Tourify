@@ -13,10 +13,35 @@ export const Home = () => {
     const [board, setBoard] = useState("intro")
     const [sideMenu, setSideMenu] = useState(false)
 
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
 
     return (
-        <div className='flex flex-col lg:flex-row grow relative  w-full pt-12' >
+        <div className='flex flex-col  grow relative  w-full pt-12' >
             
+            { scrolled }
+            <div className="w-full h-80 bg-center bg-cover" style={{ backgroundImage: 'url(https://res.cloudinary.com/deqscvjss/image/upload/logo_tkmvq2.png)' }}  ></div>
+            { scrolled }
+            <div className="w-full h-200" ></div>
+            { scrolled }
+            <div className="w-full h-200" ></div>
+            { scrolled }
+            <div className="w-full h-200" ></div>
+            { scrolled }
+            <div className="w-full h-200" ></div>
+            { scrolled }
+            <div className="w-full h-200" ></div>
+            { scrolled }
         </div>
     );
 };
