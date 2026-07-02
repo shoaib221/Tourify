@@ -10,6 +10,7 @@ django-crispy-forms==2.6
 djangorestframework==3.17.1
 djangorestframework_simplejwt==5.5.1
 google-auth==2.55.1
+gunicorn==26.0.0
 idna==3.18
 packaging==26.2
 pillow==12.2.0
