@@ -12,10 +12,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-pr$x9_t)r!ezv3&4rtnb4ehiub^!o4z0cl+z7wt%^2_ew9q-j!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
-    "tourify.onrender.com",
+    "https://tourify-zkwo.onrender.com/",
+    'localhost'
 ]
 import os
 
