@@ -3,19 +3,6 @@
 @plugin "daisyui";
 
 
-:root {
-	--color1: rgb(72, 78, 200);
-	--color1a: #727171;
-	--color2: rgb(189, 198, 236);
-	--color3: #ffffff;
-	--color4: #ffffff;
-	--color5: #ffffff;
-	--color6: #ffffff;
-	--color7: #ffffff;
-	--color-blur: rgba(0, 0, 0, 0.338);
-	--shadow-1: rgba(0, 0, 0, 0.2);
-	--shadow-2: rgba(0, 0, 0, 0.15);
-}
 
 
 * {

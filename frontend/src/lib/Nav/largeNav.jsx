@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+import { IoIosMenu } from "react-icons/io";
+import './largeNav.css';
+import { RxCross1 } from "react-icons/rx";
+
 
 export const Logo = () => {
 
@@ -46,14 +50,36 @@ const SubNav2 = ({ title, path }) => {
 
 
 
+const MenuBar = ( { showMenu, setShowMenu } ) => {
+    return (
+        <>
+            { showMenu && (
+                <div className='fixed inset-0 bg-black/50 z-40' onClick={() => setShowMenu(false)} >
+                    {/* Shadow */}
+                </div>
+            )}
+
+            <div className={`${ showMenu ? 'selected' : '' } menu-bar`} >
+                <RxCross1 className='text-xl cursor-pointer m-2' onClick={() => setShowMenu(false)} />
+
+            </div>
+        </>
+
+    )
+}
+
 
 export const LargeNav = () => {
     const [scrolled, setScrolled] = useState(0);
     const [showLarger, setShowLarger] = useState(false);
+    const [showMenu, setShowMenu] = useState(false);
 
     useEffect(() => {
         const scroll = () => {
             setScrolled(window.scrollY);
+            if (window.scrollY < 20) {
+                setShowLarger(false);
+            }
         };
 
         window.addEventListener("scroll", scroll);
@@ -61,26 +87,37 @@ export const LargeNav = () => {
         return () => window.removeEventListener("scroll", scroll);
     }, []);
 
+    useEffect(() => {
+        if (showMenu) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
+        }
+
+    }, [showMenu]);
+
 
 
     return (
         <>
-            { showLarger && (
-                <div className='fixed inset-0 bg-black/50 z-20' onClick={() => setShowLarger( false ) } >
-
+            {showLarger && scrolled > 20 && (
+                <div className='fixed inset-0 bg-black/50 z-20' onClick={() => setShowLarger(false)} >
+                    {/* Shadow */}
                 </div>
             )}
-            <div className={`nav-1 bg-(--color1) z-30 hidden lg:flex gap-2 p-2 justify-between ${scrolled > 20 ? 'border' : ''}`} onCLick={() => alert( 'hello 1')} >
+            <div className={`nav-1 bg-(--color1) z-30 hidden lg:flex gap-2 p-2 justify-between ${scrolled > 20 ? 'border' : ''}`} onCLick={() => alert('hello 1')} >
                 <Logo />
 
                 {
                     scrolled > 20 && !showLarger ? <SubNav setShowLarger={setShowLarger} /> : <SubNav2 />
                 }
 
-                <div className='flex gap-2 p-2' >
-                    <div> G </div>
-                    <div> Menu </div>
-                </div>
+
+
+                <IoIosMenu onClick={() => setShowMenu(true)}  className='text-xl cursor-pointer' />
+
+                <MenuBar showMenu={showMenu} setShowMenu={setShowMenu} />
+
             </div>
         </>
     )

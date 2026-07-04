@@ -18,6 +18,7 @@ ALLOWED_HOSTS = [
     "tourify-zkwo.onrender.com",
     'localhost'
 ]
+
 import os
 
 # Application definition
