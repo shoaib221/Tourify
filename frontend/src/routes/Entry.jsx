@@ -19,6 +19,8 @@ export const Entry = () => {
 
             <Outlet />
 
+            <Footer />
+
         </div>
     )
 

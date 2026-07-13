@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { IoIosMenu } from "react-icons/io";
 import './largeNav.css';
 import { RxCross1 } from "react-icons/rx";
+import { useNavigate } from "react-router-dom";
 
 
 export const Logo = () => {
+    const navigate = useNavigate();
 
     return (
-        <div className='h-[3rem] text-(--color4) flex gap-2 items-center' >
+        <div className='h-[3rem] text-(--color4) flex gap-2 items-center' onClick={ () => navigate('/') } >
             <div className='h-6 w-6 bg-cover bg-center' style={{ backgroundImage: 'url(/static/logo.png)' }} ></div>
             <div className='cen-ver text-(--color4) font-bold' >tourify</div>
         </div>
@@ -26,15 +28,16 @@ export const SubNav = ({ setShowLarger }) => {
 }
 
 const SubNav2 = ({ title, path }) => {
+    const navigate = useNavigate();
 
     return (
         <div className='grow flex flex-col items-center bg-(--color1)' >
 
 
             <div className='flex gap-2 p-2' >
-                <div>Home</div>
-                <div>Experiences</div>
-                <div>Services</div>
+                <div onClick={() => navigate('/homes')} >Homes</div>
+                <div onClick={() => navigate('/experiences')} >Experiences</div>
+                <div onClick={() => navigate('/services')} >Services</div>
             </div>
 
             <div className='flex gap-2 p-2 border w-full max-w-150 justify-evenly' >
